@@ -835,6 +835,25 @@ function cwSailing:MoveLongship(longshipEnt, location)
 								end
 							end
 						end);
+
+						local playersSpottedOnShore = 0;
+
+						timer.Simple(duration - math.random(15, 20), function()
+							for _,v in _player.Iterator() do
+								if (game.GetMap() == "rp_district21" and v:GetPos():WithinAABox(Vector(-9165.838867, -12853.338867, -1659.900513), Vector(-15334.818359, -10628.473633, 1635.470581))) or (v:GetPos():Distance(destination.pos) <= Clockwork.config:Get("talk_radius"):Get() * 4) then
+									if not v.cwObserverMode and v:Alive() then
+										playersSpottedOnShore = playersSpottedOnShore + 1;
+									end
+								end
+							end
+
+							if playersSpottedOnShore > 0 then
+								Clockwork.chatBox:AddInRadius(nil, "localevent", "As the coast draws closer, you notice the silhouettes of "..playersSpottedOnShore.." figures near the ship's landing position! Ready for battle!", longshipEnt:GetPos(), Clockwork.config:Get("talk_radius"):Get() * 3);
+							else
+								Clockwork.chatBox:AddInRadius(nil, "localevent", "As the coast draws closer, you notice a distinct lack of silhouettes near the ship's landing position.", longshipEnt:GetPos(), Clockwork.config:Get("talk_radius"):Get() * 3);
+							end
+
+						end);
 					else
 						longshipEnt.destination = nil;
 					end
