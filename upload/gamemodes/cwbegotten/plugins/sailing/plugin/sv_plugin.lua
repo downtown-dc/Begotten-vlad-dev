@@ -840,7 +840,7 @@ function cwSailing:MoveLongship(longshipEnt, location)
 
 						timer.Simple(duration - math.random(15, 20), function()
 							for _,v in _player.Iterator() do
-								if (game.GetMap() == "rp_district21" and v:GetPos():WithinAABox(Vector(-9165.838867, -12853.338867, -1659.900513), Vector(-15334.818359, -10628.473633, 1635.470581))) or (v:GetPos():Distance(destination.pos) <= Clockwork.config:Get("talk_radius"):Get() * 4) then
+								if ((location == "calm" or location == "rough") and ((game.GetMap() == "rp_district21" and v:GetPos():WithinAABox(Vector(-9165.838867, -12853.338867, -1659.900513), Vector(-15334.818359, -10628.473633, 1635.470581))) or (game.GetMap() == "rp_begotten3" and v:GetPos():WithinAABox(Vector(-9165.838867, -12853.338867, -1659.900513), Vector(-15334.818359, -10628.473633, 1635.470581))))) or (location == "styx" and (game.GetMap() == "rp_begotten3" and v:GetPos():WithinAABox(Vector(0, 0, 0), Vector(0, 0, 0)))) then
 									if not v.cwObserverMode and v:Alive() then
 										playersSpottedOnShore = playersSpottedOnShore + 1;
 									end
