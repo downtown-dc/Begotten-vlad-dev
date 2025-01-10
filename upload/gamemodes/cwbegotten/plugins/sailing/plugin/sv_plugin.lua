@@ -835,6 +835,7 @@ function cwSailing:MoveLongship(longshipEnt, location)
 								end
 							end
 						end);
+<<<<<<< HEAD
 
 						local playersSpottedOnShore = 0;
 
@@ -854,6 +855,8 @@ function cwSailing:MoveLongship(longshipEnt, location)
 							end
 
 						end);
+=======
+>>>>>>> parent of 85d7555a (Update sv_plugin.lua)
 					else
 						longshipEnt.destination = nil;
 					end
