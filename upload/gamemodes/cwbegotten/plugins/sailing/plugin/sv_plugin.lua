@@ -523,7 +523,7 @@ function cwSailing:DetermineSeaZone(longshipEnt, destination)
 	return sea_zone;
 end
 
-function cwSailing:MoveLongship(longshipEnt, location)
+function cwSailing:MoveLongship(longshipEnt, location, forceSpecificSpot)
 	if IsValid(longshipEnt) then
 		if longshipEnt.longshipType == "ironclad" then
 			local steamEngine = longshipEnt.steamEngine;
@@ -532,8 +532,14 @@ function cwSailing:MoveLongship(longshipEnt, location)
 				return false;
 			end
 		end
-	
-		local destination = self:FindValidLongshipSpawn(longshipEnt, location);
+
+		local destination;
+		
+		if forceSpecificSpot then
+			destination = forceSpecificSpot;
+		else
+			destination = self:FindValidLongshipSpawn(longshipEnt, location);
+		end
 		
 		if destination then
 			local longshipAngles = Angle(0, 90, 0);
@@ -826,12 +832,14 @@ function cwSailing:MoveLongship(longshipEnt, location)
 								end
 							end);
 						end
+
+						local goToSpot = self:FindValidLongshipSpawn(longshipEnt, location);
 						
 						timer.Create("TravelTimer_"..tostring(longshipEnt:EntIndex()), duration, 1, function()
 							--printp("Travel timer fired!");
 							if IsValid(longshipEnt) and longshipEnt.destination then
 								if longshipEnt.location == "calm" or longshipEnt.location == "rough" or longshipEnt.location == "styx" then
-									self:MoveLongship(longshipEnt, longshipEnt.destination);
+									self:MoveLongship(longshipEnt, longshipEnt.destination, goToSpot);
 								end
 							end
 						end);
@@ -840,7 +848,7 @@ function cwSailing:MoveLongship(longshipEnt, location)
 
 						timer.Simple(duration - math.random(15, 20), function()
 							for _,v in _player.Iterator() do
-								if ((location == "calm" or location == "rough") and ((game.GetMap() == "rp_district21" and v:GetPos():WithinAABox(Vector(-9165.838867, -12853.338867, -1659.900513), Vector(-15334.818359, -10628.473633, 1635.470581))) or (game.GetMap() == "rp_begotten3" and v:GetPos():WithinAABox(Vector(-9165.838867, -12853.338867, -1659.900513), Vector(-15334.818359, -10628.473633, 1635.470581))))) or (location == "styx" and (game.GetMap() == "rp_begotten3" and v:GetPos():WithinAABox(Vector(0, 0, 0), Vector(0, 0, 0)))) then
+								if (game.GetMap() == "rp_district21" and v:GetPos():WithinAABox(Vector(-9165.838867, -12853.338867, -1659.900513), Vector(-15334.818359, -10628.473633, 1635.470581))) or (v:GetPos():Distance(goToSpot.pos) <= Clockwork.config:Get("talk_radius"):Get() * 5) then
 									if not v.cwObserverMode and v:Alive() then
 										playersSpottedOnShore = playersSpottedOnShore + 1;
 									end
